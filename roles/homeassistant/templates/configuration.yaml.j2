@@ -1,0 +1,423 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 52.592749
+  longitude: 4.657796
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Amsterdam
+  customize: !include customize.yaml
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  api_password: !secret api_password
+
+updater:
+
+discovery:
+
+conversation:
+
+sun:
+
+tts:
+  - platform: google
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+alarm_control_panel:
+  - platform: manual
+    name: Home Alarm
+    code: !secret alarm_code
+    pending_time: 30
+    delay_time: 20
+    trigger_time: 4
+    disarmed:
+      trigger_time: 0
+    armed_home:
+      pending_time: 0
+      delay_time: 0
+
+# @TODO: https://home-assistant.io/components/alarm_control_panel.manual/
+
+history:
+  include:
+    entities:
+      - alarm_control_panel.home_alarm
+      - binary_sensor.deur_achter_sensor
+      - binary_sensor.deur_openslaand_sensor
+      - binary_sensor.deur_voor_sensor
+      - binary_sensor.disk_full
+      - binary_sensor.washing_machine
+      - climate.radiatorkraan_badkamer_heating_1
+      - climate.radiatorkraan_liam_heating_1
+      - climate.radiatorkraan_masterbedroom_1_heating_1
+      - climate.radiatorkraan_masterbedroom_2_heating_1
+      - climate.radiatorkraan_zolder_heating_1
+      - device_tracker.daan_phone
+      - device_tracker.joyce_phone
+      - group.all_devices
+      - input_number.volume_setpoint
+      - input_select.denon_chanel
+      - media_player.denon_avrx2000
+      - media_player.philips_tv
+      - sensor.cpu_used
+      - sensor.disk_used_home
+      - sensor.power_wasmachine_power
+      - sensor.power_wasmachine_voltage
+      - sensor.power_hal_power
+      - sensor.power_hal_voltage
+      - sensor.radiatorkraan_badkamer_temperature
+      - sensor.radiatorkraan_liam_temperature
+      - sensor.radiatorkraan_masterbedroom_1_temperature
+      - sensor.radiatorkraan_masterbedroom_2_temperature
+      - sensor.radiatorkraan_zolder_temperature
+      - sensor.ram_available
+      - switch.power_hal_switch
+      - switch.power_wasmachine_switch
+      - binary_sensor.top_floor_heating_required
+      - binary_sensor.zwave_out_of_sync
+      - sensor.min_temperature
+      - sensor.min_battery
+      - sensor.br_wind_speed
+      - sensor.br_temperature
+      - sensor.br_humidity
+      - sensor.br_pressure
+
+history_graph:
+  gr1:
+    name: Alarm
+    entities:
+      - alarm_control_panel.home_alarm
+      - binary_sensor.deur_achter_sensor
+      - binary_sensor.deur_openslaand_sensor
+      - binary_sensor.deur_voor_sensor
+      - device_tracker.daan_phone
+      - device_tracker.joyce_phone
+      - group.all_devices
+    hours_to_show: 720
+    refresh: 60
+  gr2:
+    name: Temperature
+    entities:
+      - sensor.br_temperature
+      - sensor.radiatorkraan_badkamer_temperature
+      - sensor.radiatorkraan_liam_temperature
+      - sensor.radiatorkraan_masterbedroom_1_temperature
+      - sensor.radiatorkraan_masterbedroom_2_temperature
+      - sensor.radiatorkraan_zolder_temperature
+    hours_to_show: 720
+
+# Enables support for tracking state changes over time.
+recorder:
+  purge_keep_days: 1000
+  purge_interval: 1
+  db_url: !secret mysql_uri
+  include:
+    entities:
+      - alarm_control_panel.home_alarm
+      - binary_sensor.deur_achter_sensor
+      - binary_sensor.deur_openslaand_sensor
+      - binary_sensor.deur_voor_sensor
+      - binary_sensor.disk_full
+      - binary_sensor.washing_machine
+      - climate.radiatorkraan_badkamer_heating_1
+      - climate.radiatorkraan_liam_heating_1
+      - climate.radiatorkraan_masterbedroom_1_heating_1
+      - climate.radiatorkraan_masterbedroom_2_heating_1
+      - climate.radiatorkraan_zolder_heating_1
+      - device_tracker.daan_phone
+      - device_tracker.joyce_phone
+      - group.all_devices
+      - input_number.volume_setpoint
+      - input_select.denon_chanel
+      - media_player.denon_avrx2000
+      - media_player.philips_tv
+      - sensor.cpu_used
+      - sensor.disk_used_home
+      - sensor.power_wasmachine_power
+      - sensor.power_wasmachine_voltage
+      - sensor.power_hal_power
+      - sensor.power_hal_voltage
+      - sensor.radiatorkraan_badkamer_temperature
+      - sensor.radiatorkraan_liam_temperature
+      - sensor.radiatorkraan_masterbedroom_1_temperature
+      - sensor.radiatorkraan_masterbedroom_2_temperature
+      - sensor.radiatorkraan_zolder_temperature
+      - sensor.ram_available
+      - switch.power_hal_switch
+      - switch.power_wasmachine_switch
+      - binary_sensor.top_floor_heating_required
+      - binary_sensor.zwave_out_of_sync
+      - sensor.min_temperature
+      - sensor.min_battery
+      - sensor.br_wind_speed
+      - sensor.br_temperature
+      - sensor.br_humidity
+      - sensor.br_pressure
+
+media_player:
+  - platform: denonavr
+    host: 192.168.0.13
+    name: Denon AVR-X2000
+    show_all_sources: True
+#  - platform: philips_js
+#    host: 192.168.0.14
+  - platform: ziggo_mediabox_xl
+    host: 192.168.0.22
+    name: Ziggo Mediabox
+
+zwave:
+  usb_path: /dev/ttyACM0
+  network_key: !secret network_key
+
+climate:
+  - platform: zwave
+
+mqtt:
+  broker: localhost
+  username: homeassistant
+  password: !secret mqtt_pass
+  client_id: ha_daan
+
+weather:
+  - platform: buienradar
+
+notify:
+  - name: browser
+    platform: html5
+  - name: daan_mail
+    platform: smtp
+    server: smtp.byte.nl 
+    port: 587
+    timeout: 30
+    sender_name: My Home Assistant
+    encryption: starttls
+    sender: security@daanmolenaar.nl
+    recipient: security@daanmolenaar.nl
+    username: daanm001
+    password: !secret security_mailbox_pass
+  - name: pushetta
+    platform: pushetta
+    api_key: !secret pushetta_api_key
+    channel_name: HA-damol
+  - name: pushsafer
+    platform: pushsafer
+    private_key: !secret pushsafer_api_key
+
+sensor:
+  - platform: nederlandse_spoorwegen
+    email: dcgmolenaar@gmail.com
+    password: !secret ns_password
+    routes:
+      - name: Cas-Ams-Sloterdijk
+        from: Cas
+        to: Ass
+      - name: Ams-Slot-Cas
+        from: Ass
+        to: Cas
+  - platform: rest
+    name: strava_ride_last_miles
+    resource: https://www.strava.com/api/v3/athlete/activities
+    method: GET
+    headers:
+        Authorization: !secret strava_api_token
+    value_template: >-
+        {{ '{{' }} value_json[0].distance | multiply(0.001) | round(1) {{ '}}' }}
+    unit_of_measurement: km
+    scan_interval: 300
+  - platform: buienradar
+    monitored_conditions:
+      - symbol
+      - humidity
+      - temperature
+      - windspeed
+      - pressure
+  - platform: min_max
+    type: min
+    name: Min battery
+    entity_ids:
+      - sensor.radiatorkraan_zolder_battery
+      - sensor.radiatorkraan_masterbedroom_2_battery
+      - sensor.radiatorkraan_masterbedroom_1_battery
+      - sensor.radiatorkraan_liam_battery
+      - sensor.radiatorkraan_badkamer_battery
+  - platform: min_max
+    type: min
+    name: Min Temperature
+    entity_ids:
+      - sensor.radiatorkraan_masterbedroom_2_temperature
+      - sensor.radiatorkraan_masterbedroom_1_temperature
+      - sensor.radiatorkraan_liam_temperature
+      - sensor.radiatorkraan_zolder_temperature
+      - sensor.radiatorkraan_badkamer_temperature
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: memory_free
+      - type: load_1m
+      - type: processor_use
+  - platform: template
+    sensors:
+      radiatorkraan_masterbedroom_1_battery:
+        value_template: >-
+          {{ '{{' }} states.zwave.radiatorkraan_masterbedroom_1.attributes.battery_level {{ '}}' }}
+        unit_of_measurement: '%'
+      radiatorkraan_masterbedroom_2_battery:
+        value_template: >-
+          {{ '{{' }} states.zwave.radiatorkraan_masterbedroom_2.attributes.battery_level {{ '}}' }}
+        unit_of_measurement: '%'
+      radiatorkraan_liam_battery:
+        value_template: >-
+          {{ '{{' }} states.zwave.radiatorkraan_liam.attributes.battery_level {{ '}}' }}
+        unit_of_measurement: '%'
+      radiatorkraan_zolder_battery:
+        value_template: >-
+          {{ '{{' }} states.zwave.radiatorkraan_zolder.attributes.battery_level {{ '}}' }}
+        unit_of_measurement: '%'
+      radiatorkraan_badkamer_battery:
+        value_template: >-
+          {{ '{{' }} states.zwave.radiatorkraan_badkamer.attributes.battery_level {{ '}}' }}
+        unit_of_measurement: '%'
+
+binary_sensor:
+  - platform: template
+    sensors:
+      washing_machine:
+        friendly_name: "Washing Machine"
+        delay_off:
+          minutes: 3
+        value_template: >-
+          {{ '{{' }} states('sensor.power_wasmachine_power')|float > 10 {{ '}}' }}
+      disk_full:
+        friendly_name: "Disk full"
+        delay_off:
+          minutes: 5
+        value_template: >-
+          {{ '{{' }} states('sensor.disk_used_home')|float > 80 {{ '}}' }}
+      battery_replacement:
+        friendly_name: "Battery replacement"
+        delay_off:
+          minutes: 5
+        value_template: >-
+          {{ '{{' }} states('sensor.min_battery')|float < 5 {{ '}}' }}
+      top_floor_heating_required:
+        friendly_name: "Top floor heating required"
+        value_template: >-
+          {{ '{{' }}
+              (
+                states.climate.radiatorkraan_masterbedroom_1_heating_1.attributes.temperature|float - states('sensor.radiatorkraan_masterbedroom_1_temperature')|float > 2 and
+                as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_masterbedroom_1.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) < 1800
+              ) or (
+                states.climate.radiatorkraan_masterbedroom_2_heating_1.attributes.temperature|float - states('sensor.radiatorkraan_masterbedroom_2_temperature')|float > 2 and
+                as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_masterbedroom_2.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) < 1800
+              ) or (
+                states.climate.radiatorkraan_zolder_heating_1.attributes.temperature|float - states('sensor.radiatorkraan_zolder_temperature')|float > 2 and
+                as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_zolder.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) < 1800
+              ) or (
+                states.climate.radiatorkraan_badkamer_heating_1.attributes.temperature|float - states('sensor.radiatorkraan_badkamer_temperature')|float > 2 and
+                as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_badkamer.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) < 1800
+              ) or (
+                states.climate.radiatorkraan_liam_heating_1.attributes.temperature|float - states('sensor.radiatorkraan_liam_temperature')|float > 2 and
+                as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_liam.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) < 1800
+              )
+          {{ '}}' }}
+      zwave_out_of_sync:
+        friendly_name: "search for devices that are not in sync"
+        value_template: >-
+          {{ '{{' }}
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_masterbedroom_1.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_masterbedroom_2.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_liam.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_badkamer.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.radiatorkraan_zolder.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.power_wasmachine.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.power_hal.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > 1800 or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.deur_voor.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > states.zwave.deur_voor.attributes.wake_up_interval or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.deur_openslaand.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > states.zwave.deur_openslaand.attributes.wake_up_interval or
+              as_timestamp(now()) - as_timestamp(strptime(states.zwave.deur_achter.attributes.receivedTS | string | truncate(19,True,'',0),'%Y-%m-%d %H:%M:%S:%f')) > states.zwave.deur_achter.attributes.wake_up_interval
+          {{ '}}' }}
+  - platform: workday
+    country: NL
+
+device_tracker:
+  - platform: owntracks
+
+zone:
+  - name: Werk Daan
+    latitude: 52.384357
+    longitude: 4.868480
+    radius: 200
+
+scene:
+  - name: Away
+    entities:
+        climate.radiatorkraan_badkamer_heating_1:
+            temperature: 8
+        climate.radiatorkraan_masterbedroom_1_heating_1:
+            temperature: 8
+        climate.radiatorkraan_masterbedroom_2_heating_1:
+            temperature: 8
+        climate.radiatorkraan_zolder_heating_1:
+            temperature: 8
+        climate.radiatorkraan_liam_heating_1:
+            temperature: 8
+  - name: Waking up
+    entities:
+        climate.radiatorkraan_badkamer_heating_1:
+            temperature: 20
+        climate.radiatorkraan_masterbedroom_1_heating_1:
+            temperature: 20
+        climate.radiatorkraan_masterbedroom_2_heating_1:
+            temperature: 20
+        climate.radiatorkraan_liam_heating_1:
+            temperature: 18
+  - name: Going to bed
+    entities:
+        climate.radiatorkraan_badkamer_heating_1:
+            temperature: 20
+        climate.radiatorkraan_masterbedroom_1_heating_1:
+            temperature: 20
+        climate.radiatorkraan_masterbedroom_2_heating_1:
+            temperature: 20
+        climate.radiatorkraan_liam_heating_1:
+            temperature: 18
+  - name: Home
+    entities:
+        climate.radiatorkraan_badkamer_heating_1:
+            temperature: 15
+        climate.radiatorkraan_masterbedroom_1_heating_1:
+            temperature: 15
+        climate.radiatorkraan_masterbedroom_2_heating_1:
+            temperature: 15
+        climate.radiatorkraan_liam_heating_1:
+            temperature: 18
+  - name: Work Home
+    entities:
+        climate.radiatorkraan_zolder_heating_1:
+            temperature: 20
+  - name: Sleeping
+    entities:
+        climate.radiatorkraan_badkamer_heating_1:
+            temperature: 15
+        climate.radiatorkraan_masterbedroom_1_heating_1:
+            temperature: 15
+        climate.radiatorkraan_masterbedroom_2_heating_1:
+            temperature: 15
+        climate.radiatorkraan_zolder_heating_1:
+            temperature: 8
+        climate.radiatorkraan_liam_heating_1:
+            temperature: 17
+

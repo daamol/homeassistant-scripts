@@ -1,0 +1,15 @@
+platform: bwalarm
+name: House
+pending_time: 30
+trigger_time: 600
+alarm: switch.alarm
+warning: switch.warning
+headsup: []
+immediate:
+    - binary_sensor.deur_openslaand_sensor
+    - binary_sensor.test_now
+delayed:
+    - binary_sensor.deur_achter_sensor
+    - binary_sensor.deur_voor_sensor
+    - binary_sensor.test_delay
+notathome: []

@@ -1,0 +1,71 @@
+- hosts: all
+  become: true
+
+  roles:
+    - raspbian_bootstrap
+    - firewall
+    - mysql
+    - mosquitto
+    - homeassistant
+
+  vars:
+    ansible_user: "pi"
+    ansible_ssh_private_key_file: "keys/id_rsa"
+    dbs_ssh_pubkey: "{{ lookup('file', 'keys/id_rsa.pub') }}"
+
+    dbs_set_hostname: true
+    dbs_set_locale: true
+    dbs_set_timezone: true
+    dbs_set_ntp: true
+    dbs_hostname: "{{ inventory_hostname }}"
+    dbs_default_locale: "en_US.UTF-8"
+    dbs_locales:
+      - "en_US.UTF-8"
+    dbs_timezone: "Europe/Amsterdam"
+
+    dbs_ntp_hosts:
+      - "0.fi.pool.ntp.org"
+      - "1.fi.pool.ntp.org"
+      - "2.fi.pool.ntp.org"
+      - "3.fi.pool.ntp.org"
+    dbs_ntp_pkg: "ntp"
+
+    dbs_apt_default_host: "mirrordirector.raspbian.org"
+    dbs_apt_components: "main contrib non-free rpi"
+    open_ports:
+      - "ssh"
+      - "8123"
+      - "1883"
+      - "1925"
+    ha_user: ha
+    ha_port: 8123
+    ha_conf_dir: /opt/home-assistant
+    mysql_databases:
+       - name: homeassistant
+         collation: utf8_general_ci
+         encoding: utf8
+         replicate: 0
+    mysql_users:
+       - name: homeassistant
+         password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63633339663934623866623662653463393136656462616532343862353233623338366266653461
+          3039613133363139633837303631626436323337313937610a656666383939343761373134613731
+          62316465363130623633353836653763323332323939666333623937386661353737353764656138
+          6138636338383538320a396535363966306366633161313138613963626130346233393137313130
+          38663438623439326663306231343835313832303164613363383237353661636636
+         priv: "homeassistant.*:ALL"
+    mysql_root_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          36303933313234353832363962393739633832373336623032373037396432656130373831643365
+          3637623033666536666435386639366530396363343666340a313334663862383637343436353663
+          37356664633830366238623930363938393039616161326431376261376232323666636265326330
+          3661633534636233340a356461346461363738333931343464396561366466363936643364633132
+          39643861356562346162333934643261333964366631373364396262666239373039
+    password: "!vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63626339366333313633383532303064343130623366383938323862643836616139656537313830
+          3436393732306361656336396366626631366162663164330a306637636633353966646364306130
+          63613933336163653061356164316166656131313362633163393364343936626566643262393730
+          3432626534396434310a323161613831336438353534633933336366356139363066656339316530
+          30623361393261323663333162363630643564363663653564313937646463633735"

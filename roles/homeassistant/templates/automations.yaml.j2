@@ -1,0 +1,207 @@
+- action:
+  - data: {}
+    service: script.burgular
+  alias: Alarm triggered
+  condition: []
+  id: '1508404427772'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.ha_alarm
+      to: 'triggered'
+- action:
+  - data:
+      message: Wasmachine is klaar
+      title: Wasmachine is klaar
+    service: notify.daan_mail
+  - data:
+      message: Wasmachine is klaar
+      title: Wasmachine is klaar
+    service: notify.pushetta
+  alias: Washing machine ready
+  condition: []
+  id: '1508418470083'
+  trigger:
+  - entity_id: binary_sensor.washing_machine
+    from: 'on'
+    platform: state
+    to: 'off'
+- action:
+  - data:
+      entity_id: switch.power_hal_switch
+    service: switch.turn_off
+  alias: Disable floor warmer
+  condition: []
+  id: 'top_floor_heating_required'
+  trigger:
+  - entity_id: binary_sensor.top_floor_heating_required
+    from: 'off'
+    platform: state
+    to: 'on'
+- action:
+  - data:
+      entity_id: switch.power_hal_switch
+    service: switch.turn_on
+  alias: Enable floor warmer
+  condition: []
+  id: 'top_floor_heating_not_needed'
+  trigger:
+  - entity_id: binary_sensor.top_floor_heating_required
+    from: 'on'
+    platform: state
+    to: 'off'
+- action:
+  - service: scene.turn_on
+    entity_id: scene.sleeping
+  - data:
+      entity_id: switch.power_hal_switch
+    service: switch.turn_on
+  - data: {
+      "entity_id": "alarm_control_panel.home_alarm",
+      "code": !secret alarm_code
+    }
+    service: alarm_control_panel.alarm_arm_home
+  alias: Sleeping
+  condition:
+  - condition: state
+    entity_id: device_tracker.daan_phone
+    state: home
+  - condition: state
+    entity_id: device_tracker.joyce_phone
+    state: home
+  id: '1508476814096'
+  trigger:
+  - at: '23:00'
+    platform: time
+- action:
+  - service: scene.turn_on
+    entity_id: scene.going_to_bed
+  - data:
+      entity_id: switch.power_hal_switch
+    service: switch.turn_on
+  - data: {
+      "entity_id": "alarm_control_panel.home_alarm",
+      "code": !secret alarm_code
+    }
+    service: alarm_control_panel.alarm_arm_home
+  alias: Going to bed
+  condition:
+  - condition: state
+    entity_id: device_tracker.daan_phone
+    state: home
+  - condition: state
+    entity_id: device_tracker.joyce_phone
+    state: home
+  id: 'going_to_bed'
+  trigger:
+  - at: '19:00'
+    platform: time
+- action:
+  - data: {
+      "entity_id": "alarm_control_panel.home_alarm",
+      "code": !secret alarm_code
+    }
+    service: alarm_control_panel.alarm_disarm
+  - entity_id: scene.waking_up
+    service: scene.turn_on
+  alias: Wakker worden
+  condition: []
+  id: '1508493804603'
+  trigger:
+  - at: 06:00
+    platform: time
+- action:
+  - entity_id: scene.work_home
+    service: scene.turn_on
+  alias: Thuis werken
+  condition:
+  - condition: time
+    weekday:
+    - fri
+  - condition: state
+    entity_id: device_tracker.daan_phone
+    state: home
+  id: '1508493804603'
+  trigger:
+  - at: 06:00
+    platform: time
+- action:
+  - data: {
+      "entity_id": "alarm_control_panel.home_alarm",
+      "code": !secret alarm_code
+    }
+    service: alarm_control_panel.alarm_disarm
+  - entity_id: scene.home
+    service: scene.turn_on
+  alias: Iemand komt thuis
+  condition: []
+  id: '1508493805503'
+  trigger:
+  - entity_id: device_tracker.joyce_phone
+    from: not_home
+    platform: state
+    to: home
+  - entity_id: device_tracker.daan_phone
+    from: not_home
+    platform: state
+    to: home
+- action:
+  - entity_id: scene.away
+    service: scene.turn_on
+  - data: {
+      "entity_id": "alarm_control_panel.home_alarm",
+      "code": !secret alarm_code
+    }
+    service: alarm_control_panel.alarm_arm_away
+  alias: Going away
+  condition:
+  - condition: state
+    entity_id: device_tracker.daan_phone
+    state: not_home
+  - condition: state
+    entity_id: device_tracker.joyce_phone
+    state: not_home
+  id: '1508493991546'
+  trigger:
+  - entity_id: device_tracker.daan_phone
+    from: home
+    platform: state
+    to: not_home
+  - entity_id: device_tracker.joyce_phone
+    from: home
+    platform: state
+    to: not_home
+- action:
+  - data:
+      entity_id: media_player.denon_avrx2000
+    entity_id: media_player.denon_avrx2000
+    service: media_player.turn_on
+  - data:
+      entity_id: media_player.denon_avrx2000
+      source: GAME
+    service: media_player.select_source
+  alias: PS4 aan
+  condition: []
+  id: '1508675678346'
+  trigger:
+  - entity_id: device_tracker.0cfe459160af
+    from: not_home
+    platform: state
+    to: home
+- alias: 'Trigger alarm while armed away'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.deur_achter_sensor
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.deur_openslaand_sensor
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.deur_voor_sensor
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_away
+  action:
+    service: alarm_control_panel.alarm_trigger
+    entity_id: alarm_control_panel.home_alarm

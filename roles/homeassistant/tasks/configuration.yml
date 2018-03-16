@@ -1,0 +1,71 @@
+# This file is part of the Home Assistant role.
+#
+# Copyright (c) 2015-2017 Daan Molenaar <dcgmolenaar@gmail.com>
+#
+---
+- include_vars: secrets.yml
+
+- name: install automations.yaml file
+  template:
+    src: automations.yaml.j2
+    dest: "/opt/home-assistant/automations.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+- name: install configuration.yaml file
+  template:
+    src: configuration.yaml.j2
+    dest: "/opt/home-assistant/configuration.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+- name: install customize.yaml file
+  template:
+    src: customize.yaml.j2
+    dest: "/opt/home-assistant/customize.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+- name: install known_devices.yaml file
+  template:
+    src: known_devices.yaml.j2
+    dest: "/opt/home-assistant/known_devices.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+- name: install scripts.yaml file
+  template:
+    src: scripts.yaml.j2
+    dest: "/opt/home-assistant/scripts.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+- name: install secrets.yaml file
+  template:
+    src: secrets.yaml.j2
+    dest: "/opt/home-assistant/secrets.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+
+- name: install groups.yaml file
+  template:
+    src: groups.yaml.j2
+    dest: "/opt/home-assistant/groups.yaml"
+    owner: ha
+    group: ha
+    mode: 0644
+
+- name: copy user images
+  copy:
+    src: files/
+    dest: "/opt/home-assistant/www"
+    owner: foo
+    group: foo
+    mode: 0644

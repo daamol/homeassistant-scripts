@@ -1,0 +1,8 @@
+- name: prepare rasbian for home assistant
+  import_tasks: preperation.yml
+- name: install home assistant
+  import_tasks: installation.yml
+- name: home assistant configuration
+  import_tasks: configuration.yml
+- name: systemd config
+  import_tasks: systemd.yml
