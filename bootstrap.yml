@@ -2,10 +2,10 @@
   become: true
 
   roles:
-    - raspbian_bootstrap
-    - firewall
-    - mysql
-    - mosquitto
+#    - raspbian_bootstrap
+#    - firewall
+#    - mysql
+#    - mosquitto
     - homeassistant
 
   vars:

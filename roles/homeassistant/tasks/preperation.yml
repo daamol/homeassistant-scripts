@@ -5,6 +5,8 @@
 # Licensed under MIT. All rights reserved.
 #
 ---
+- include_vars: secrets.yml
+
 - name: install required packages
   package: name={{ item }} state=present
   with_items:
@@ -13,6 +15,17 @@
   - gcc
   - libudev-dev
   - vim
+  - influxdb
+  - grafana
+
+- name: install required python 3 modules (pre-install)
+  pip: name={{ item }} extra_args="--upgrade" executable=pip3
+  with_items:
+  - colorlog
+  - mysqlclient
+  - setuptools
+  - requests
+  - influxdb
 
 - name: create user
   user: name={{ ha_user }}
@@ -24,3 +37,12 @@
 
 - name: create directory
   file: path={{ ha_conf_dir }} state=directory mode=02775 owner={{ ha_user }} group={{ ha_user }}
+
+- name: Create influxdb database using custom credentials
+  influxdb_database:
+      hostname: "127.0.0.1"
+      username: "ha"
+      password: "{{influxdb_password}}"
+      database_name: "ha"
+      ssl: yes
+      validate_certs: yes
