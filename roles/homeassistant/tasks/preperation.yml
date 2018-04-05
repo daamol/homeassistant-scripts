@@ -15,8 +15,6 @@
   - gcc
   - libudev-dev
   - vim
-  - influxdb
-  - grafana
 
 - name: install required python 3 modules (pre-install)
   pip: name={{ item }} extra_args="--upgrade" executable=pip3

@@ -1,0 +1,11 @@
+- name: install required packages
+  package: name={{ item }} state=present
+  with_items:
+  - grafana
+
+- name: start grafana
+  systemd:
+    name: grafana
+    daemon_reload: yes
+    enabled: yes
+    state: started

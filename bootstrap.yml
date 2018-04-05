@@ -6,6 +6,8 @@
 #    - firewall
 #    - mysql
 #    - mosquitto
+    - influx
+    - grafana
     - homeassistant
 
   vars:

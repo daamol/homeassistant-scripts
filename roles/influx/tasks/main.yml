@@ -1,0 +1,17 @@
+- name: install required packages
+  package: name={{ item }} state=present
+  with_items:
+  - influxdb
+
+- name: install required python 3 modules (pre-install)
+  pip: name={{ item }} extra_args="--upgrade" executable=pip3
+  with_items:
+  - requests
+  - influxdb
+
+- name: start influxdb
+  systemd:
+    name: influxdb
+    daemon_reload: yes
+    enabled: yes
+    state: started
