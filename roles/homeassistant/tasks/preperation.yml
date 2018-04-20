@@ -35,12 +35,3 @@
 
 - name: create directory
   file: path={{ ha_conf_dir }} state=directory mode=02775 owner={{ ha_user }} group={{ ha_user }}
-
-- name: Create influxdb database using custom credentials
-  influxdb_database:
-      hostname: "127.0.0.1"
-      username: "ha"
-      password: "{{influxdb_password}}"
-      database_name: "ha"
-      ssl: yes
-      validate_certs: yes

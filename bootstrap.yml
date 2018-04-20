@@ -3,9 +3,9 @@
 
   roles:
 #    - raspbian_bootstrap
-#    - firewall
-#    - mysql
-#    - mosquitto
+    - firewall
+    - mysql
+    - mosquitto
     - influx
     - grafana
     - homeassistant
@@ -39,6 +39,7 @@
       - "8123"
       - "1883"
       - "1925"
+      - "3000"
     ha_user: ha
     ha_port: 8123
     ha_conf_dir: /opt/home-assistant
