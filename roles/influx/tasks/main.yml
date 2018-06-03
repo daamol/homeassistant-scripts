@@ -15,12 +15,12 @@
     daemon_reload: yes
     enabled: yes
     state: started
-
-- name: Create influxdb database using custom credentials
-  influxdb_database:
-      hostname: "127.0.0.1"
-      username: "ha"
-      password: "{{influxdb_password}}"
-      database_name: "ha"
-      ssl: yes
-      validate_certs: yes
+#
+#- name: Create influxdb database using custom credentials
+#  influxdb_database:
+#      hostname: "127.0.0.1"
+#      username: "home-assistant"
+#      password: "{{ influxdb_password }}"
+#      database_name: "home_assistant"
+#      ssl: yes
+#      validate_certs: yes

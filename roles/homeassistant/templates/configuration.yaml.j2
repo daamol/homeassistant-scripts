@@ -32,6 +32,59 @@ sun:
 tts:
   - platform: google
 
+
+influxdb:
+  host: 127.0.0.1
+  username: home-assistant
+  password: !secret influxdb_password
+  include:
+    entities:
+      - alarm_control_panel.home_alarm
+      - binary_sensor.deur_achter_sensor
+      - binary_sensor.deur_openslaand_sensor
+      - binary_sensor.deur_voor_sensor
+      - binary_sensor.disk_full
+      - binary_sensor.washing_machine
+      - climate.radiatorkraan_badkamer_heating_1
+      - climate.radiatorkraan_liam_heating_1
+      - climate.radiatorkraan_masterbedroom_1_heating_1
+      - climate.radiatorkraan_masterbedroom_2_heating_1
+      - climate.radiatorkraan_zolder_heating_1
+      - device_tracker.daan_phone
+      - device_tracker.joyce_phone
+      - group.all_devices
+      - input_number.volume_setpoint
+      - input_select.denon_chanel
+      - media_player.denon_avrx2000
+      - media_player.philips_tv
+      - sensor.cpu_used
+      - sensor.disk_used_home
+      - sensor.power_wasmachine_power
+      - sensor.power_wasmachine_voltage
+      - sensor.power_hal_power
+      - sensor.power_hal_voltage
+      - sensor.radiatorkraan_badkamer_temperature
+      - sensor.radiatorkraan_liam_temperature
+      - sensor.radiatorkraan_masterbedroom_1_temperature
+      - sensor.radiatorkraan_masterbedroom_2_temperature
+      - sensor.radiatorkraan_zolder_temperature
+      - sensor.ram_available
+      - switch.power_hal_switch
+      - switch.power_wasmachine_switch
+      - binary_sensor.top_floor_heating_required
+      - binary_sensor.zwave_out_of_sync
+      - sensor.min_temperature
+      - sensor.min_battery
+      - sensor.br_wind_speed
+      - sensor.br_temperature
+      - sensor.br_humidity
+      - sensor.br_pressure
+      - sensor.gas_consumption
+      - sensor.hourly_gas_consumption
+      - sensor.power_consumption
+      - sensor.power_consumption_low
+      - sensor.power_consumption_normal
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
@@ -94,78 +147,11 @@ history:
       - sensor.br_temperature
       - sensor.br_humidity
       - sensor.br_pressure
-
-history_graph:
-  gr1:
-    name: Alarm
-    entities:
-      - alarm_control_panel.home_alarm
-      - binary_sensor.deur_achter_sensor
-      - binary_sensor.deur_openslaand_sensor
-      - binary_sensor.deur_voor_sensor
-      - device_tracker.daan_phone
-      - device_tracker.joyce_phone
-      - group.all_devices
-    hours_to_show: 720
-    refresh: 60
-  gr2:
-    name: Temperature
-    entities:
-      - sensor.br_temperature
-      - sensor.radiatorkraan_badkamer_temperature
-      - sensor.radiatorkraan_liam_temperature
-      - sensor.radiatorkraan_masterbedroom_1_temperature
-      - sensor.radiatorkraan_masterbedroom_2_temperature
-      - sensor.radiatorkraan_zolder_temperature
-    hours_to_show: 720
-
-# Enables support for tracking state changes over time.
-recorder:
-  purge_keep_days: 1000
-  purge_interval: 1
-  db_url: !secret mysql_uri
-  include:
-    entities:
-      - alarm_control_panel.home_alarm
-      - binary_sensor.deur_achter_sensor
-      - binary_sensor.deur_openslaand_sensor
-      - binary_sensor.deur_voor_sensor
-      - binary_sensor.disk_full
-      - binary_sensor.washing_machine
-      - climate.radiatorkraan_badkamer_heating_1
-      - climate.radiatorkraan_liam_heating_1
-      - climate.radiatorkraan_masterbedroom_1_heating_1
-      - climate.radiatorkraan_masterbedroom_2_heating_1
-      - climate.radiatorkraan_zolder_heating_1
-      - device_tracker.daan_phone
-      - device_tracker.joyce_phone
-      - group.all_devices
-      - input_number.volume_setpoint
-      - input_select.denon_chanel
-      - media_player.denon_avrx2000
-      - media_player.philips_tv
-      - sensor.cpu_used
-      - sensor.disk_used_home
-      - sensor.power_wasmachine_power
-      - sensor.power_wasmachine_voltage
-      - sensor.power_hal_power
-      - sensor.power_hal_voltage
-      - sensor.radiatorkraan_badkamer_temperature
-      - sensor.radiatorkraan_liam_temperature
-      - sensor.radiatorkraan_masterbedroom_1_temperature
-      - sensor.radiatorkraan_masterbedroom_2_temperature
-      - sensor.radiatorkraan_zolder_temperature
-      - sensor.ram_available
-      - switch.power_hal_switch
-      - switch.power_wasmachine_switch
-      - binary_sensor.top_floor_heating_required
-      - binary_sensor.zwave_out_of_sync
-      - sensor.min_temperature
-      - sensor.min_battery
-      - sensor.br_wind_speed
-      - sensor.br_temperature
-      - sensor.br_humidity
-      - sensor.br_pressure
+      - sensor.gas_consumption
+      - sensor.hourly_gas_consumption
+      - sensor.power_consumption
+      - sensor.power_consumption_low
+      - sensor.power_consumption_normal
 
 media_player:
   - platform: denonavr
@@ -217,6 +203,7 @@ notify:
     private_key: !secret pushsafer_api_key
 
 sensor:
+  - platform: dsmr
   - platform: nederlandse_spoorwegen
     email: dcgmolenaar@gmail.com
     password: !secret ns_password
